@@ -27,6 +27,7 @@
     - [validFunctionsOnCounters](./validations.md#validfunctionsoncounters)
     - [rateBeforeAggregation](./validations.md#ratebeforeaggregation)
     - [expressionCanBeEvaluated](./validations.md#expressioncanbeevaluated)
+    - [expressionUsesMandatoryLabels](./validations.md#expressionUsesMandatoryLabels)  
     - [expressionUsesExistingLabels](./validations.md#expressionusesexistinglabels)
     - [expressionSelectorsMatchesAnything](./validations.md#expressionselectorsmatchesanything)
     -
@@ -230,6 +231,7 @@ params:
 Fails if the rule `expr` uses the `irate` function as discouraged
 in https://prometheus.io/docs/prometheus/latest/querying/functions/#irate.
 
+
 ### `validFunctionsOnCounters`
 
 Fails if the expression uses a `rate` or `increase` function on a metric that does not end with the `_total` suffix.
@@ -250,6 +252,16 @@ params:
   timeSeriesLimit: 100
   evaluationDurationLimit: 1m
 ```
+
+### `expressionUsesMandatoryLabels`
+
+Fails if any of the vectors in the expression lack the label:value combination.
+```yaml
+params:
+  labelValues: 
+  - label1:value1
+  - label2:value2
+``` 
 
 ### `expressionUsesExistingLabels`
 

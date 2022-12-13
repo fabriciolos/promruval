@@ -2,15 +2,16 @@ package validator
 
 import (
 	"fmt"
+	"regexp"
+	"strings"
+	"time"
+
 	"github.com/fusakla/promruval/pkg/prometheus"
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/model/rulefmt"
 	"github.com/prometheus/prometheus/promql/parser"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v3"
-	"regexp"
-	"strings"
-	"time"
 )
 
 func newExpressionDoesNotUseOlderDataThan(paramsConfig yaml.Node) (Validator, error) {
@@ -97,6 +98,44 @@ func (h expressionDoesNotUseLabels) Validate(rule rulefmt.Rule, _ *prometheus.Cl
 				errs = append(errs, fmt.Errorf("forbidden label `%s` used in expression", l))
 			}
 		}
+	}
+	return errs
+}
+
+func newExpressionUsesMandatoryLabels(paramsConfig yaml.Node) (Validator, error) {
+	params := struct {
+		LabelValues []string `yaml:"labelValues"`
+	}{}
+	if err := paramsConfig.Decode(&params); err != nil {
+		return nil, err
+	}
+	if len(params.LabelValues) == 0 {
+		return nil, fmt.Errorf("missing labels")
+	}
+	return &expressionUsesMandatoryLabels{labelValues: params.LabelValues}, nil
+}
+
+type expressionUsesMandatoryLabels struct {
+	labelValues []string
+}
+
+func (h expressionUsesMandatoryLabels) String() string {
+	var labelList []string
+	for _, value := range h.labelValues {
+		eachLabel := fmt.Sprintf("%s", value)
+		labelList = append(labelList, eachLabel)
+	}
+	return fmt.Sprintf("uses all the required `%s` labels is in its expression", strings.Join(labelList, "`,`"))
+}
+
+func (h expressionUsesMandatoryLabels) Validate(rule rulefmt.Rule, _ *prometheus.Client) []error {
+	usesLabels, err := getExpressionEachLabels(h.labelValues, rule.Expr)
+	if err != nil {
+		return err
+	}
+	var errs []error
+	if !usesLabels {
+		errs = []error{fmt.Errorf("missing label used in expression")}
 	}
 	return errs
 }

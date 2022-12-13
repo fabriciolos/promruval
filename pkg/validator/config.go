@@ -2,6 +2,7 @@ package validator
 
 import (
 	"fmt"
+
 	"github.com/fusakla/promruval/pkg/config"
 	"gopkg.in/yaml.v3"
 )
@@ -21,6 +22,7 @@ var registeredValidators = map[string]validatorCreator{
 	"annotationHasAllowedValue":            newAnnotationHasAllowedValue,
 	"annotationIsValidURL":                 newAnnotationIsValidURL,
 	"expressionDoesNotUseLabels":           newExpressionDoesNotUseLabels,
+	"expressionUsesMandatoryLabels":        newExpressionUsesMandatoryLabels,
 	"expressionDoesNotUseOlderDataThan":    newExpressionDoesNotUseOlderDataThan,
 	"expressionDoesNotUseRangeShorterThan": newExpressionDoesNotUseRangeShorterThan,
 	"annotationIsValidPromQL":              newAnnotationIsValidPromQL,

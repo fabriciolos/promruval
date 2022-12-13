@@ -1,0 +1,20 @@
+groups:
+- name: "sgs-teste"
+  rules:
+  - alert: highrequestlatency
+    #expr: up + on (dois) job:request_latency_seconds:mean5m > sum by(seis)(metrica)
+    expr: up{projeto="bana",um="um1", sigla = "ss"} + on (dois) job:request_latency_seconds:mean5m{tres="tres3", sigla="sags",quatro="quatro4",projeto="anana",cinco="cinco5"} > sum by(seis)(metrica{projeto="banana",sigla="sgs",sete="sete7"})
+    for: 10m
+    labels:
+      site: '{{  $labels.site }}'
+      sigla: sgs
+      ambiente: '{{  $labels.ambiente }}'
+      aplicacao: '{{  $labels.aplicacao }}'
+      infra: '{{  $labels.cluster }}'
+      severity: warning
+      type: workload
+
+    annotations:
+      message: alarme teste
+      runbook_url: fontes.intranet.bb.com.br
+      instanceId: 5e9acbfc-77be-11ed-962c-a6ab1a1e83f3

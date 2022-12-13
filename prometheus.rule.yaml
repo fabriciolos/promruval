@@ -1,0 +1,33 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: "aaaaa-rule"
+  namespace: sgs-platmon-regras
+  labels:
+    sigla: atb
+    projeto: projetox
+    servico: platmon
+    app: prometheus-rule
+  annotations:
+    instanceId: 123453sddficador
+    provisioner: f3165955
+spec:
+  groups:
+    - name: "sgs-aaaaaa"
+      rules:
+      - alert: "baitaErro"
+        expr: "sum(up) > 1"
+        for: 5m
+        labels:
+          site: {{labels.ambiente}} 
+          sigla: atb
+          ambiente: {{ $labels.ambiente }}  
+          aplicacao: {{  $labels.aplicacao }}   
+          infra: {{  $labels.cluster }}                            
+          severity: major
+          type: workload  
+        annotations:
+          message: "Errou rude"
+          runbook_url: "http://www.gaoogle.com"
+          instanceId: 123453sddficador
+
